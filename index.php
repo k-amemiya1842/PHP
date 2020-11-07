@@ -1,34 +1,4 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="post.css">
-        <title>Laravel News - index</title>
-    </head>
-    <body>
-        <nav class="main-header">
-            <div class="nav-bar">
-                <a href="#" class="nav-link">Laravel News</a>
-            </div>
-        </nav>
-        <section class="form-post">
-            <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
-
-            <form id="formPost" method="POST" class="form" action="#">
-                <div class="input-title">
-                <label for="title">タイトル：</label>
-                <input type="text" name="title">
-                </div>
-                <div class="input-body">
-                <label for="body">記事：</label>
-                <textarea name="body" cols="50" rows="10" id="body"></textarea>
-                </div>
-                <div class="input-submit">
-                <input type="submit" class="btn-submit" value="投稿">
-                </div>
-            </form>
-        <?php
+<?php
         $title = " "; //タイトルの変数
         $text = " "; //記事の内容
 
@@ -62,6 +32,37 @@
             }
         }
         ?>
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="post.css">
+        <title>Laravel News - index</title>
+    </head>
+    <body>
+        <nav class="main-header">
+            <div class="nav-bar">
+                <a href="#" class="nav-link">Laravel News</a>
+            </div>
+        </nav>
+        <section class="form-post">
+            <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
+
+            <form id="formPost" method="POST" class="form" action="#">
+                <div class="input-title">
+                <label for="title">タイトル：</label>
+                <input type="text" name="title">
+                </div>
+                <div class="input-body">
+                <label for="body">記事：</label>
+                <textarea name="body" cols="50" rows="10" id="body"></textarea>
+                </div>
+                <div class="input-submit">
+                <input type="submit" class="btn-submit" value="投稿">
+                </div>
+            </form>
+
         </section>
         <hr>
         <section class="posts">
