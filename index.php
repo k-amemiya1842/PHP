@@ -3,93 +3,81 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="post.css">
         <title>Laravel News - index</title>
     </head>
     <body>
-        <nav>
-            <div>
-                <a href="#">Laravel News</a>
+        <nav class="main-header">
+            <div class="nav-bar">
+                <a href="#" class="nav-link">Laravel News</a>
             </div>
         </nav>
-        <section>
-            <h2>さぁ、最新のニュースをシェアしましょう</h2>
+        <section class="form-post">
+            <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
 
-            <form method="POST" action="<?php print($_SERVER['PHP_SELF']) ?>">
-                <div>
-                <label for="">タイトル：</label>
-                <input type="text" name="article_title">
+            <form id="formPost" method="POST" class="form" action="#">
+                <div class="input-title">
+                <label for="title">タイトル：</label>
+                <input type="text" name="title">
                 </div>
-                <div>
-                <label for="">記事：</label>
-                <textarea name="contents"></textarea>
+                <div class="input-body">
+                <label for="body">記事：</label>
+                <textarea name="body" cols="50" rows="10" id="body"></textarea>
                 </div>
-                <div>
-                <input type="submit" name="btn1" value="投稿">
+                <div class="input-submit">
+                <input type="submit" class="btn-submit" value="投稿">
                 </div>
             </form>
-        </section>
-
-        <section>
         <?php
+        $title = " "; //タイトルの変数
+        $text = " "; //記事の内容
 
-            if($_SERVER["REQUEST_METHOD"] == "POST"){
-                writeData();
+        $FILE = "article.txt"; //保存するファイル名
+        $id = uniqid(); //ユニークなIDを自動作成
+        $DATA = []; //一回分の投稿の情報を入れる
+        $BOARD = []; //すべての投稿の情報を入れる
+        
+        //＄FILEというファイルが存在している時
+        if(file_exists($FILE)) {
+            //ファイルを読み込む
+            $BOARD = json_decode(file_get_contents($FILE));
+        }
+
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            //リクエストパラメーターが空でなければ
+            if (!empty($_POST["body"]) && !empty($_POST["title"])) {
+                //投稿ボタンが押された場合
+
+                //$textに送信されたテキストを代入
+                $title = $_POST["title"];
+                $text = $_POST["body"];
+
+                //保存の処理
+                //新規データ
+                $DATA = [$id, $title, $text];
+                $BOARD[] = $DATA;
+
+                //全体配列をファイルに保存する
+                file_put_contents($FILE, json_encode($BOARD));
             }
-
-            readData();
-
-            function readData(){
-                $news_file = 'news.txt';
-
-                $fp = fopen($news_file, 'rb');
-
-                if ($fp){
-                    if (flock($fp, LOCK_SH)){
-                        while (!feof($fp)) {
-                            $buffer = fgets($fp);
-                            print($buffer);
-                        }
-
-                        flock($fp, LOCK_UN);
-                    }else{
-                        print('ファイルロックに失敗しました');
-                    }
-                }
-
-
-                fclose($fp);
-            }
-
-            function writeData(){
-                $article_title = $_POST['article_title'];
-                $contents = $_POST['contents'];
-                $contents = nl2br($contents);
-
-                $data = "<hr>\r\n";
-                $data = $data."<p>".$article_title."</p>\r\n";
-                $data = $data."<p>".$contents."</p>\r\n";
-
-                $news_file = 'news.txt';
-                $fp = fopen($news_file, 'ab');
-
-                if ($fp){
-                    if (flock($fp, LOCK_EX)){
-                        if (fwrite($fp,  $data) === FALSE){
-                            print('ファイル書き込みに失敗しました');
-                        }
-                
-                        flock($fp, LOCK_UN);
-                    }else{
-                        print('ファイルロックに失敗しました');
-                    }
-                }
-
-                fclose($fp);
-            }
-
-            
-
+        }
         ?>
+        </section>
+        <hr>
+        <section class="posts">
+            <?php foreach ((array)$BOARD as $ARTICLE) : ?>
+                <div class="post">
+                <h3 class="post-title">
+                <?php echo $ARTICLE[1]; ?>
+                </h3>
+                <p class="post-body">
+                <?php echo $ARTICLE[2]; ?>
+                </p>
+                <a href="/posts/<?php echo $ARTICLE[0]; ?>">記事全文・コメントを見る</a>
+                </div>
+                <hr>
+            <?php endforeach; ?>
+
         </section>
 
     </body>
