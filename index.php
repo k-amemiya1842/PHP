@@ -1,37 +1,48 @@
 <?php
-        $title = ""; //タイトルの変数
-        $text = ""; //記事の内容
+$title = ""; //タイトルの変数
+$text = ""; //記事の内容
 
-        $FILE = "article.txt"; //保存するファイル名
-        $id = uniqid(); //ユニークなIDを自動作成
-        $DATA = []; //一回分の投稿の情報を入れる
-        $BOARD = []; //すべての投稿の情報を入れる
-        
-        //＄FILEというファイルが存在している時
-        if(file_exists($FILE)) {
-            //ファイルを読み込む
-            $BOARD = json_decode(file_get_contents($FILE));
-        }
+$FILE = "article.txt"; //保存するファイル名
+$id = uniqid(); //ユニークなIDを自動作成
+$DATA = []; //一回分の投稿の情報を入れる
+$BOARD = []; //すべての投稿の情報を入れる
+$error_msg = [];
 
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
-            //リクエストパラメーターが空でなければ
-            if (!empty($_POST["body"]) && !empty($_POST["title"])) {
-                //投稿ボタンが押された場合
+//＄FILEというファイルが存在している時
+if(file_exists($FILE)) {
+    //ファイルを読み込む
+    $BOARD = json_decode(file_get_contents($FILE));
+}
 
-                //$textに送信されたテキストを代入
-                $title = $_POST["title"];
-                $text = $_POST["body"];
+if(mb_strlen($_POST["title"]) >= 30) {
+    $error_msg[] = "タイトルは30文字以下です。";
+}
 
-                //保存の処理
-                //新規データ
-                $DATA = [$id, $title, $text];
-                $BOARD[] = $DATA;
 
-                //全体配列をファイルに保存する
-                file_put_contents($FILE, json_encode($BOARD));
-            }
-        }
-        ?>
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    //リクエストパラメーターが空でなければ
+    if (!empty($_POST["body"]) && !empty($_POST["title"])) {
+        //投稿ボタンが押された場合
+
+        //$textに送信されたテキストを代入
+        $title = $_POST["title"];
+        $text = $_POST["body"];
+
+        //保存の処理
+        //新規データ
+        $DATA = [$id, $title, $text];
+        $BOARD[] = $DATA;
+
+        //全体配列をファイルに保存する
+        file_put_contents($FILE, json_encode($BOARD));
+    }
+    else {
+        if(empty($_POST["title"])) $error_msg[] = "タイトルは必須です。";
+        if(empty($_POST["body"])) $error_msg[] = "記事は必須です。";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
     <head>
@@ -43,12 +54,18 @@
     <body>
         <nav class="main-header">
             <div class="nav-bar">
-                <a href="#" class="nav-link">Laravel News</a>
+                <a href="index.php" class="nav-link">Laravel News</a>
             </div>
         </nav>
         <section class="form-post">
             <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
 
+            <!-- エラーメッセージ -->
+            <?php foreach($error_msg as $error) :?>
+            <p><?php echo $error; ?></p>
+            <?php endforeach?>
+
+            <!-- フォーム -->
             <form id="formPost" method="POST" class="form" action="#">
                 <div class="input-title">
                 <label for="title">タイトル：</label>
@@ -62,9 +79,11 @@
                 <input type="submit" class="btn-submit" value="投稿">
                 </div>
             </form>
-
         </section>
+
         <hr>
+        
+        <!-- 記事 -->
         <section class="posts">
             <?php foreach ((array)$BOARD as $ARTICLE) : ?>
                 <div class="post">
@@ -74,7 +93,7 @@
                 <p class="post-body">
                 <?php echo $ARTICLE[2]; ?>
                 </p>
-                <a href="/posts/<?php echo $ARTICLE[0]; ?>">記事全文・コメントを見る</a>
+                <a href="/article.php?id=<?php echo $ARTICLE[0]; ?>">記事全文・コメントを見る</a>
                 </div>
                 <hr>
             <?php endforeach; ?>
