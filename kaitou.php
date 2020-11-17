@@ -3,7 +3,7 @@
 $uniqueId = uniqid(); //ユニークなIDを自動生成
 
 $id = $_GET['id'];
-$FILE = './article.txt';
+$FILE = './data.txt';
 $file = json_decode(file_get_contents($FILE));
 $page_data = [];
 
@@ -87,43 +87,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-?>      
-
-
-
+?>
 
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="article.css">
-        <title>Laravel News - article</title>
-    </head>
-    <body>
-        <nav class="main-header">
-            <div class="nav-bar">
-                <a href="index.php" class="nav-link">Laravel News</a>
-            </div>
-        </nav>
-        <section class="post-detail">
-                <h3 class="post-title"><?php echo $page_data[1]; ?></h3>
-                <p class="post-body"><?php echo $page_data[2]; ?></p>
-        </section>
 
-        <hr>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale= 1.0">
+  <meta http-equiv="content-type" charset="utf-8">
+  <link rel='stylesheet' href='./css/article.css' type="text/css">
+  <title>Laravel news</title>
+</head>
 
-        <!-- エラーメッセージ -->
-        <ul>
-        <?php foreach ($error_message as $error) : ?>
-            <li>
-            <?php echo $error ?>
-            </li>
-        <?php endforeach; ?>
-        </ul>
-        <!-- コメント表示部分 -->
-        <section class="comments">
-        <form method="post" class="commentForm">
+<body>
+  <h1 class='title link'><a href='/'>Laravel News</a></h1>
+
+  <section class="main">
+    <div class='content'>
+      <h2 class="subTitle"><?php echo $page_data[1]; ?></h2>
+      <p class='article'><?php echo $page_data[2]; ?></p>
+    </div>
+    <!-- エラーメッセージ -->
+    <ul>
+      <?php foreach ($error_message as $error) : ?>
+        <li>
+          <?php echo $error ?>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+    <div class='commentContainer'>
+      <!-- コメント表示部分 -->
+      <form method="post" class="commentForm">
         <textarea name="txt" class="inputFlex commentInput"></textarea>
         <input type="submit" value="コメントを書く" name='<?php echo $id; ?>' class="commnetSubmitStyle">
       </form>
@@ -139,9 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
           </div>
         </div>
+
       <?php endforeach; ?>
     </div>
-        </section>
+  </section>
+</body>
 
-    </body>
 </html>
