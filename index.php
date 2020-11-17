@@ -35,6 +35,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         //全体配列をファイルに保存する
         file_put_contents($FILE, json_encode($BOARD));
+
+          //header()で指定したページにリダイレクト
+        //今回は今と同じ場所にリダイレクト（つまりWebページを更新）
+        header('Location: ' . $_SERVER['SCRIPT_NAME']);
+        //プログラム終了
+        exit;
     }
     else {
         if(empty($_POST["title"])) $error_msg[] = "タイトルは必須です。";
@@ -66,7 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <?php endforeach?>
 
             <!-- フォーム -->
-            <form id="formPost" method="POST" class="form" action="#">
+            <form id="formPost" method="POST" class="form" onsubmit="return submitCheckFunction()">
                 <div class="input-title">
                 <label for="title">タイトル：</label>
                 <input type="text" name="title">
@@ -99,6 +105,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <?php endforeach; ?>
 
         </section>
-
+        <script type="text/javascript" src="./js/index.js"></script>           
     </body>
 </html>
